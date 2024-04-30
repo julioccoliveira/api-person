@@ -12,23 +12,23 @@ A API desenvolvida deve permitir:
 
 
 
-Uma pessoa deve possuir os seguintes dados:
+- [ ] Uma pessoa deve possuir os seguintes dados:
 
-- [ ]  Nome completo
+    - Nome completo
 
-- Data de nascimento
+    - Data de nascimento
 
-- [X] Endereços:
+  - [X] Endereços:
 
--> Logradouro
+      - Logradouro
 
--> CEP
+      - CEP
 
--> Número
+      - Número
 
--> Cidade
+      - Cidade
 
--> Estado
+      - Estado
 
 
 

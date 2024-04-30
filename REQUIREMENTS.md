@@ -12,7 +12,7 @@ A API desenvolvida deve permitir:
 
 
 
-- [ ] Uma pessoa deve possuir os seguintes dados:
+- [X] Uma pessoa deve possuir os seguintes dados:
 
     - Nome completo
 

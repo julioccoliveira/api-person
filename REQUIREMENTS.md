@@ -18,7 +18,7 @@ Uma pessoa deve possuir os seguintes dados:
 
 - Data de nascimento
 
-- [ ] Endereços:
+- [X] Endereços:
 
 -> Logradouro
 

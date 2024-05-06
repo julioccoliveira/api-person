@@ -19,4 +19,13 @@ public class PessoaController {
 	@Autowired
 	private PessoaService pessoaService;
 
+	@PostMapping
+	public ResponseEntity<?> insertPessoas(@RequestBody ArrayList<PessoaDto> pessoas) {
+		if (pessoas.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pessoa can't be empty");
+		}
+		pessoas.forEach(pessoa -> pessoaService.insert(pessoa.toEntity()));
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(pessoas);
+	}
 }

@@ -63,4 +63,16 @@ public class Endereco {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Endereco endereco = (Endereco) o;
+		return Objects.equals(logradouro, endereco.logradouro) &&
+				Objects.equals(numero, endereco.numero) &&
+				Objects.equals(cep, endereco.cep) &&
+				Objects.equals(cidade, endereco.cidade) &&
+				Objects.equals(estado, endereco.estado);
+	}
 }

@@ -4,7 +4,7 @@
 
 A API desenvolvida deve permitir:
 
-- [ ] Criar, editar e consultar uma ou mais pessoas;
+- [X] Criar, editar e consultar uma ou mais pessoas;
 
 - [ ] Criar, editar e consultar um ou mais endereços de uma pessoa; e
 

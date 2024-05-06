@@ -276,4 +276,41 @@ public class PessoaControllerTest {
 				.andExpect(content().string("Pessoa not found"))
 				.andExpect(status().isNotFound());
 	}
+	@Test
+	@DisplayName("/pessoa/{id}/endereco Should POST Endereco")
+	public void testPostEndereco() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqGetBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+		String reqPostBody = objectMapper.writeValueAsString(List.of(mockEndereco3()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqGetBody));
+		mockMvc.perform(post("/pessoa/1/endereco")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqPostBody))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/pessoa/1/endereco/2"))
+				.andExpect(jsonPath("$.logradouro").value(mockEndereco3().getLogradouro()))
+				.andExpect(jsonPath("$.numero").value(mockEndereco3().getNumero()))
+				.andExpect(jsonPath("$.cep").value(mockEndereco3().getCep()))
+				.andExpect(jsonPath("$.cidade").value(mockEndereco3().getCidade()))
+				.andExpect(jsonPath("$.estado").value(mockEndereco3().getEstado()))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("/pessoa/{id}/endereco Shouldn't POST Endereco - 404 Pessoa")
+	public void testPostEndereco404Pessoa() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		String reqPostBody = objectMapper.writeValueAsString(List.of(mockEndereco3()));
+
+		mockMvc.perform(post("/pessoa/1/endereco")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqPostBody))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Pessoa not found"));
+	}
 }

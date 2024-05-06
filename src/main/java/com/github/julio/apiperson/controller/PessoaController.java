@@ -121,4 +121,20 @@ public class PessoaController {
 
 		return ResponseEntity.ok(pessoa.getEnderecos().get(enderecoIndex));
 	}
+
+	@PostMapping("{pessoaId}/endereco")
+	public ResponseEntity<?> insertEndereco(
+			@PathVariable Long pessoaId,
+			@RequestBody ArrayList<Endereco> enderecos) {
+
+		Pessoa pessoa = pessoaService.findById(pessoaId);
+		if (pessoa == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pessoa not found");
+		}
+
+		pessoa.addEnderecos(enderecos);
+		pessoaService.update(pessoaId, pessoa);
+
+		return ResponseEntity.ok(pessoa);
+	}
 }

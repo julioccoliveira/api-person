@@ -403,4 +403,74 @@ public class PessoaControllerTest {
 				.andExpect(content().string("Pessoa not found"));
 
 	}
+
+	private EnderecoDto mockEndereco1() {
+		EnderecoDto endereco1 = new EnderecoDto();
+		endereco1.setLogradouro("Rua A");
+		endereco1.setNumero("123");
+		endereco1.setCep("12345-678");
+		endereco1.setCidade("São Paulo");
+		endereco1.setEstado("SP");
+
+		return endereco1;
+	}
+
+	private EnderecoDto mockEndereco2() {
+		EnderecoDto endereco2 = new EnderecoDto();
+		endereco2.setLogradouro("Rua Z");
+		endereco2.setNumero("321");
+		endereco2.setCep("54321-123");
+		endereco2.setCidade("Rio de Janeiro");
+		endereco2.setEstado("RJ");
+
+		return endereco2;
+	}
+
+	private EnderecoDto mockEndereco3() {
+		EnderecoDto endereco3 = new EnderecoDto();
+		endereco3.setLogradouro("Rua J");
+		endereco3.setNumero("987");
+		endereco3.setCep("98765-555");
+		endereco3.setCidade("Apodi");
+		endereco3.setEstado("RN");
+
+		return endereco3;
+	}
+
+	private PessoaDto mockPessoa1() throws ParseException {
+		PessoaDto pessoa1 = new PessoaDto();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date dataNascimento = dateFormat.parse("1990-01-01");
+
+		pessoa1.setDataNascimento(dataNascimento);
+		pessoa1.setNomeCompleto("Joao");
+		pessoa1.setEnderecos(List.of(mockEndereco1(), mockEndereco2()));
+
+		return pessoa1;
+	}
+
+	private PessoaDto mockPessoa2() throws ParseException {
+		PessoaDto pessoa2 = new PessoaDto();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date dataNascimento = dateFormat.parse("1992-01-01");
+
+		pessoa2.setDataNascimento(dataNascimento);
+		pessoa2.setNomeCompleto("Joao");
+		pessoa2.setEnderecos(List.of(mockEndereco2(), mockEndereco3()));
+
+		return pessoa2;
+	}
+
+	private PessoaDto mockPessoa2WithId() throws ParseException {
+		PessoaDto pessoa2 = new PessoaDto();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date dataNascimento = dateFormat.parse("1992-01-01");
+
+		pessoa2.setId(1L);
+		pessoa2.setDataNascimento(dataNascimento);
+		pessoa2.setNomeCompleto("Joao");
+		pessoa2.setEnderecos(List.of(mockEndereco2()));
+
+		return pessoa2;
+	}
 }

@@ -92,4 +92,16 @@ public class PessoaController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Endereco not found");
 		}
 	}
+
+	@GetMapping("{pessoaId}/endereco")
+	public ResponseEntity<?> getEnderecos(
+			@PathVariable Long pessoaId) {
+
+		Pessoa pessoa = pessoaService.findById(pessoaId);
+		if (pessoa == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pessoa not found");
+		}
+
+		return ResponseEntity.ok(pessoa.getEnderecos());
+	}
 }

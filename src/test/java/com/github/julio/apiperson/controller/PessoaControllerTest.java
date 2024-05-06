@@ -198,4 +198,47 @@ public class PessoaControllerTest {
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("Pessoa can't be empty"));
 	}
+
+	@Test
+	@DisplayName("/pessoa/endereco-principal/ Should PATCH Endereco principal")
+	public void testPatchEnderecoPrincipal() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqBody));
+		mockMvc.perform(patch("/pessoa/endereco-principal?pessoaId=1&indexEndereco=1"))
+				.andExpect(jsonPath("$.logradouro").value(mockEndereco2().getLogradouro()))
+				.andExpect(jsonPath("$.numero").value(mockEndereco2().getNumero()))
+				.andExpect(jsonPath("$.cep").value(mockEndereco2().getCep()))
+				.andExpect(jsonPath("$.cidade").value(mockEndereco2().getCidade()))
+				.andExpect(jsonPath("$.estado").value(mockEndereco2().getEstado()))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("/pessoa/endereco-principal/ Shouldn't PATCH Endereco principal - 404 Pessoa")
+	public void testPatchEnderecoPrincipal404Pessoa() throws Exception {
+
+		mockMvc.perform(patch("/pessoa/endereco-principal?pessoaId=900&indexEndereco=1"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Pessoa not found"));
+	}
+
+	@Test
+	@DisplayName("/pessoa/endereco-principal/ Shouldn't PATCH Endereco principal - 404 Endereco")
+	public void testPatchEnderecoPrincipal404Endereco() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqBody));
+		mockMvc.perform(patch("/pessoa/endereco-principal?pessoaId=1&indexEndereco=900"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Endereco not found"));
+	}
 }

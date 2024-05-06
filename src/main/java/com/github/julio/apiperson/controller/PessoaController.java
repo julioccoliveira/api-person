@@ -76,4 +76,20 @@ public class PessoaController {
 		}
 		return ResponseEntity.ok(response);
 	}
+
+	@PatchMapping("/endereco-principal")
+	public ResponseEntity<?> setEnderecoPrincipal(
+			@RequestParam(value = "pessoaId") Long id,
+			@RequestParam(value = "indexEndereco") int index) {
+		Pessoa pessoa = pessoaService.findById(id);
+		if (pessoa == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pessoa not found");
+		}
+		if (pessoa.canSetMainEndereco(index)) {
+			pessoaService.update(pessoa.getId(), pessoa);
+			return ResponseEntity.ok(pessoa.getMainEndereco());
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Endereco not found");
+		}
+	}
 }

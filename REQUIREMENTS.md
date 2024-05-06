@@ -8,7 +8,7 @@ A API desenvolvida deve permitir:
 
 - [ ] Criar, editar e consultar um ou mais endereços de uma pessoa; e
 
-- [ ] Poder indicar qual endereço será considerado o principal de uma pessoa.
+- [X] Poder indicar qual endereço será considerado o principal de uma pessoa.
 
 
 

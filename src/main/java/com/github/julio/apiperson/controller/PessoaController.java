@@ -137,4 +137,21 @@ public class PessoaController {
 
 		return ResponseEntity.ok(pessoa);
 	}
+
+	@PatchMapping("{pessoaId}/endereco")
+	public ResponseEntity<?> updateEndereco(
+			@PathVariable Long pessoaId,
+			@RequestBody ArrayList<Endereco> enderecos) {
+
+		Pessoa pessoa = pessoaService.findById(pessoaId);
+		if (pessoa == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pessoa not found");
+		}
+
+		pessoa.setEnderecos(enderecos);
+		pessoaService.update(pessoa.getId(), pessoa);
+
+		return ResponseEntity.ok(pessoa);
+	}
+
 }

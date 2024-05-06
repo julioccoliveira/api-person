@@ -325,6 +325,7 @@ public class PessoaControllerTest {
 				.andExpect(status().isNotFound())
 				.andExpect(content().string("Pessoa not found"));
 	}
+
 	@Test
 	@DisplayName("/pessoa/{id}/endereco Should POST Endereco")
 	public void testPostEndereco() throws Exception {
@@ -361,5 +362,45 @@ public class PessoaControllerTest {
 						.content(reqPostBody))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string("Pessoa not found"));
+	}
+
+	@Test
+	@DisplayName("/pessoa/{id}/endereco Should PATCH Endereco")
+	public void testPatchEndereco() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqGetBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+		String reqPatchBody = objectMapper.writeValueAsString(List.of(mockEndereco1(), mockEndereco2(), mockEndereco3()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqGetBody));
+		mockMvc.perform(patch("/pessoa/1/endereco")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqPatchBody))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/pessoa/1/endereco/2"))
+				.andExpect(jsonPath("$.logradouro").value(mockEndereco3().getLogradouro()))
+				.andExpect(jsonPath("$.numero").value(mockEndereco3().getNumero()))
+				.andExpect(jsonPath("$.cep").value(mockEndereco3().getCep()))
+				.andExpect(jsonPath("$.cidade").value(mockEndereco3().getCidade()))
+				.andExpect(jsonPath("$.estado").value(mockEndereco3().getEstado()))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("/pessoa/{id}/endereco Shouldn't PATCH Endereco - 404 pessoa")
+	public void testPatchEndereco404Pessoa() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqPatchBody = objectMapper.writeValueAsString(List.of(mockEndereco1(), mockEndereco2(), mockEndereco3()));
+
+		mockMvc.perform(patch("/pessoa/1/endereco")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqPatchBody))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Pessoa not found"));
+
 	}
 }

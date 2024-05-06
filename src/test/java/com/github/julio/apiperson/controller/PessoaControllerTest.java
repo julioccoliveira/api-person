@@ -50,6 +50,73 @@ public class PessoaControllerTest {
 	public void tearDown() throws InterruptedException {
 		pessoaRepository.deleteAll();
 	}
+
+	@Test
+	@DisplayName("/pessoa Should GET empty/null")
+	public void testGetPessoa() throws Exception {
+		mockMvc.perform(get("/pessoa"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$[0]").doesNotExist());
+		mockMvc.perform(get("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("[]"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$[0]").doesNotExist());
+		mockMvc.perform(get("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(""))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$[0]").doesNotExist());
+
+	}
+
+	@Test
+	@DisplayName("/pessoa Should GET 1 Pessoa")
+	public void testGetPessoaOneValue() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqBody));
+
+		mockMvc.perform(get("/pessoa"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].nomeCompleto").value(mockPessoa1().getNomeCompleto()))
+				.andExpect(jsonPath("$[0].dataNascimento").value(new SimpleDateFormat("yyyy-MM-dd").format(mockPessoa1().getDataNascimento())))
+				.andExpect(jsonPath("$[0].enderecos[0].logradouro").value(mockPessoa1().getEnderecos().get(0).getLogradouro()));
+	}
+
+	@Test
+	@DisplayName("/pessoa Should GET 2 Pessoa")
+	public void testGetPessoaMoreValues() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBody = objectMapper.writeValueAsString(List.of(mockPessoa1(), mockPessoa2()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqBody));
+
+		mockMvc.perform(get("/pessoa"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].nomeCompleto").value(mockPessoa1().getNomeCompleto()))
+				.andExpect(jsonPath("$[0].dataNascimento").value(new SimpleDateFormat("yyyy-MM-dd").format(mockPessoa1().getDataNascimento())))
+				.andExpect(jsonPath("$[0].enderecos[0].logradouro").value(mockPessoa1().getEnderecos().get(0).getLogradouro()))
+				.andExpect(jsonPath("$[1].nomeCompleto").value(mockPessoa2().getNomeCompleto()))
+				.andExpect(jsonPath("$[1].dataNascimento").value(new SimpleDateFormat("yyyy-MM-dd").format(mockPessoa2().getDataNascimento())))
+				.andExpect(jsonPath("$[1].enderecos[1].logradouro").value(mockPessoa2().getEnderecos().get(1).getLogradouro()));
+	}
+
+	@Test
+	@DisplayName("/pessoa Should GET 404 Pessoa")
+	public void testGetPessoa404() throws Exception {
+		mockMvc.perform(get("/pessoa").param("id", "900"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Pessoa not found"));
+	}
 	@Test
 	@DisplayName("/pessoa Should POST 1 Pessoa")
 	public void testPostOnePessoa() throws Exception {

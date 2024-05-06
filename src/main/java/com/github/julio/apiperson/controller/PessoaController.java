@@ -28,4 +28,24 @@ public class PessoaController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(pessoas);
 	}
+
+	@GetMapping
+	public ResponseEntity<?> getPessoas(@RequestParam(value = "id", required = false) ArrayList<Long> ids) {
+		if (ids == null || ids.isEmpty()) {
+			return ResponseEntity.ok(pessoaService.findAll());
+		}
+
+		ArrayList<PessoaDto> response = new ArrayList<>();
+		for (Long id : ids) {
+			Pessoa pessoa = pessoaService.findById(id);
+			if (pessoa != null) {
+				PessoaDto preResponse = new PessoaDto(pessoa);
+				response.add(preResponse);
+			}
+		}
+		if (response.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pessoa not found");
+		}
+		return ResponseEntity.ok(response);
+	}
 }

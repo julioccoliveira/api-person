@@ -276,6 +276,55 @@ public class PessoaControllerTest {
 				.andExpect(content().string("Pessoa not found"))
 				.andExpect(status().isNotFound());
 	}
+
+
+	@Test
+	@DisplayName("/pessoa/{id}/endereco/{index} Should GET Endereco")
+	public void testGetEnderecoIndex() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+
+		mockMvc.perform(post("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqBody))
+				.andExpect(status().isCreated());
+		mockMvc.perform(get("/pessoa/1/endereco/0"))
+				.andExpect(jsonPath("$.logradouro").value(mockEndereco1().getLogradouro()))
+				.andExpect(jsonPath("$.numero").value(mockEndereco1().getNumero()))
+				.andExpect(jsonPath("$.cep").value(mockEndereco1().getCep()))
+				.andExpect(jsonPath("$.cidade").value(mockEndereco1().getCidade()))
+				.andExpect(jsonPath("$.estado").value(mockEndereco1().getEstado()))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("/pessoa/{id}/endereco/{index} Shouldn't GET Endereco - 404")
+	public void testGetEnderecoIndex404Endereco() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBody = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+
+		mockMvc.perform(post("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqBody))
+				.andExpect(status().isCreated());
+		mockMvc.perform(get("/pessoa/1/endereco/900"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Endereco not found"));
+		mockMvc.perform(get("/pessoa/1/endereco/-1"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Endereco not found"));
+	}
+
+	@Test
+	@DisplayName("/pessoa/{id}/endereco/{index} Shouldn't GET Pessoa - 404")
+	public void testGetEnderecoIndex404Pessoa() throws Exception {
+
+		mockMvc.perform(get("/pessoa/1/endereco/900"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Pessoa not found"));
+	}
 	@Test
 	@DisplayName("/pessoa/{id}/endereco Should POST Endereco")
 	public void testPostEndereco() throws Exception {

@@ -29,6 +29,34 @@ public class PessoaController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(pessoas);
 	}
 
+	@PutMapping
+	public ResponseEntity<?> updatePessoas(@RequestBody ArrayList<PessoaDto> pessoasDto) {
+		if (pessoasDto.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pessoa can't be empty");
+		}
+
+		ArrayList<String> responses = new ArrayList<>();
+		ArrayList<Pessoa> pessoas = new ArrayList<>();
+		for (PessoaDto pessoaDto : pessoasDto) {
+			pessoas.add(pessoaDto.toEntity());
+		}
+
+		for (Pessoa pessoa : pessoas) {
+			Pessoa personToUpdate = pessoaService.findById(pessoa.getId());
+			if (personToUpdate == null) {
+				responses.add("Can't find Pessoa id " + pessoa.getId());
+			} else {
+				personToUpdate.setNomeCompleto(pessoa.getNomeCompleto());
+
+				personToUpdate.setEnderecos(pessoa.getEnderecos());
+				personToUpdate.setDataNascimento(pessoa.getDataNascimento());
+				pessoaService.update(pessoa.getId(), personToUpdate);
+				responses.add("Updated Pessoa id " + pessoa.getId());
+			}
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(responses);
+	}
+
 	@GetMapping
 	public ResponseEntity<?> getPessoas(@RequestParam(value = "id", required = false) ArrayList<Long> ids) {
 		if (ids == null || ids.isEmpty()) {

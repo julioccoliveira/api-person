@@ -117,6 +117,7 @@ public class PessoaControllerTest {
 				.andExpect(status().isNotFound())
 				.andExpect(content().string("Pessoa not found"));
 	}
+
 	@Test
 	@DisplayName("/pessoa Should POST 1 Pessoa")
 	public void testPostOnePessoa() throws Exception {
@@ -139,6 +140,59 @@ public class PessoaControllerTest {
 	public void testPostNoPessoa() throws Exception {
 
 		mockMvc.perform(post("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("[]"))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string("Pessoa can't be empty"));
+	}
+
+	@Test
+	@DisplayName("/pessoa Should PUT Pessoa")
+	public void testPutPessoa() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBodyPost = objectMapper.writeValueAsString(List.of(mockPessoa1()));
+		String reqBodyPut = objectMapper.writeValueAsString(List.of(mockPessoa2WithId()));
+
+		mockMvc.perform(post("/pessoa")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(reqBodyPost));
+
+		mockMvc.perform(put("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqBodyPut))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0]").value("Updated Pessoa id " + mockPessoa2WithId().getId()));
+
+		mockMvc.perform(get("/pessoa").param("id", "1"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].nomeCompleto").value(mockPessoa2WithId().getNomeCompleto()))
+				.andExpect(jsonPath("$[0].dataNascimento").value(LocalDate.parse("1992-01-01").toString()))
+				.andExpect(jsonPath("$[0].enderecos[0].logradouro").value(mockPessoa2WithId().getEnderecos().get(0).getLogradouro()));
+	}
+
+	@Test
+	@DisplayName("/pessoa Shouldn't PUT Pessoa")
+	public void testPutPessoaNotFound() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBodyPut = objectMapper.writeValueAsString(List.of(mockPessoa2WithId()));
+
+		mockMvc.perform(put("/pessoa")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(reqBodyPut))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0]").value("Can't find Pessoa id " + mockPessoa2WithId().getId()));
+	}
+
+	@Test
+	@DisplayName("/pessoa Shouldn't PUT Pessoa - empty")
+	public void testPutPessoaEmpty() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String reqBodyPut = objectMapper.writeValueAsString(List.of(mockPessoa2WithId()));
+
+		mockMvc.perform(put("/pessoa")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("[]"))
 				.andExpect(status().isBadRequest())
